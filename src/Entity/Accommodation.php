@@ -39,7 +39,7 @@ class Accommodation
     #[ORM\Column]
     private ?bool $available = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $availableUntil = null;
 
     #[ORM\Column(type: Types::SMALLINT)]

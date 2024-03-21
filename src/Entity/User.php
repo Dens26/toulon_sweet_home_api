@@ -51,8 +51,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $lastConnection = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $lastConnection = null;
 
     /**
      * @var Collection<int, Reservation>
@@ -219,12 +219,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLastConnection(): ?string
+    public function getLastConnection(): ?\DateTimeImmutable
     {
         return $this->lastConnection;
     }
 
-    public function setLastConnection(string $lastConnection): static
+    public function setLastConnection(\DateTimeImmutable $lastConnection): static
     {
         $this->lastConnection = $lastConnection;
 
