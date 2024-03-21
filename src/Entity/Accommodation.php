@@ -61,12 +61,19 @@ class Accommodation
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'accommodation')]
     private Collection $reservations;
 
+    /**
+     * @var Collection<int, Picture>
+     */
+    #[ORM\OneToMany(targetEntity: Picture::class, mappedBy: 'accommodation')]
+    private Collection $pictures;
+
     #[ORM\ManyToOne(inversedBy: 'accommodations')]
     private ?User $user = null;
 
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -268,6 +275,36 @@ class Accommodation
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Picture>
+     */
+    public function getPictures(): Collection
+    {
+        return $this->pictures;
+    }
+
+    public function addPicture(Picture $picture): static
+    {
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures->add($picture);
+            $picture->setAccommodation($this);
+        }
+
+        return $this;
+    }
+
+    public function removePicture(Picture $picture): static
+    {
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getAccommodation() === $this) {
+                $picture->setAccommodation(null);
+            }
+        }
 
         return $this;
     }
