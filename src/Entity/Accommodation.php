@@ -3,52 +3,90 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\AccommodationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AccommodationRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: [
+                'groups' => ['read:accommodation:collection'],
+            ]
+        ),
+        new Get(normalizationContext: [
+            'groups' => ['read:accommodation:collection', 'read:accommodation:item'],
+        ]),
+        new Patch(
+            denormalizationContext: [
+                'groups' => ['patch:accommodation'],
+            ]
+        ),
+        new Delete(),
+    ]
+)]
 class Accommodation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:accommodation:collection'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
+    private ?string $description = null;
+
     #[ORM\Column(length: 255)]
+    #[Groups(['read:accommodation:item', 'patch:accommodation'])]
     private ?string $streetName = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups(['read:accommodation:item', 'patch:accommodation'])]
     private ?string $streetNumber = null;
 
     #[ORM\Column(length: 5)]
+    #[Groups(['read:accommodation:item'])]
     private ?string $postal = null;
 
     #[ORM\Column(length: 25)]
+    #[Groups(['read:accommodation:item'])]
     private ?string $city = null;
 
     #[ORM\Column(length: 25)]
+    #[Groups(['read:accommodation:item'])]
     private ?string $country = null;
 
     #[ORM\Column]
+    #[Groups(['read:accommodation:collection'])]
     private ?bool $available = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?\DateTimeImmutable $availableUntil = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?int $nbrOfRooms = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?int $maxPerson = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?int $price = null;
 
     #[ORM\Column]
@@ -61,12 +99,14 @@ class Accommodation
      * @var Collection<int, Reservation>
      */
     #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'accommodation')]
+    #[Groups(['read:accommodation:collection'])]
     private Collection $reservations;
 
     /**
      * @var Collection<int, Picture>
      */
     #[ORM\OneToMany(targetEntity: Picture::class, mappedBy: 'accommodation')]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private Collection $pictures;
 
     #[ORM\ManyToOne(inversedBy: 'accommodations')]
@@ -91,6 +131,18 @@ class Accommodation
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
