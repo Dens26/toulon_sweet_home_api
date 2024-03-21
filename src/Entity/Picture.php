@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PictureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PictureRepository::class)]
+#[ApiResource()]
 class Picture
 {
     #[ORM\Id]
@@ -15,8 +18,14 @@ class Picture
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?string $name = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
+    private ?string $file = null;
+
+    #[Groups(['read:accommodation:item', 'patch:accommodation'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
@@ -42,6 +51,18 @@ class Picture
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(string $file): static
+    {
+        $this->file = $file;
 
         return $this;
     }

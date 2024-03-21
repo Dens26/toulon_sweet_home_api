@@ -62,6 +62,7 @@ class AppFixtures extends Fixture
             $accommodation
                 ->setUSer($users[random_int(0, 9)])
                 ->setName($faker->streetName)
+                ->setDescription($faker->text())
                 ->setStreetName($faker->streetName())
                 ->setStreetNumber((string) random_int(1, 150))
                 ->setPostal((string) random_int(10000, 99999))
@@ -85,7 +86,8 @@ class AppFixtures extends Fixture
                 $picture = new Picture();
                 $picture
                     ->setAccommodation($accommodation)
-                    ->setName('https://source.unsplash.com/featured/200x300')
+                    ->setName($faker->name())
+                    ->setFile('https://source.unsplash.com/featured/200x300')
                     ->setDescription($faker->text())
                     ->setCreatedAt(new \DateTimeImmutable())
                     ->setUppdatedAt(new \DateTimeImmutable());

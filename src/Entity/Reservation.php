@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReservationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
+#[ApiResource()]
 class Reservation
 {
     #[ORM\Id]
@@ -15,9 +18,11 @@ class Reservation
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['read:accommodation:collection'])]
     private ?\DateTimeImmutable $startOfReservation = null;
 
     #[ORM\Column]
+    #[Groups(['read:accommodation:collection'])]
     private ?\DateTimeImmutable $endOfReservation = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
