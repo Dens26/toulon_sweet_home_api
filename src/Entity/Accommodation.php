@@ -29,8 +29,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: [
                 'groups' => ['patch:accommodation'],
             ]
-        ),
-        new Delete(),
+        )
     ]
 )]
 class Accommodation
@@ -70,7 +69,7 @@ class Accommodation
     private ?string $country = null;
 
     #[ORM\Column]
-    #[Groups(['read:accommodation:collection'])]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?bool $available = null;
 
     #[ORM\Column(nullable: true)]
