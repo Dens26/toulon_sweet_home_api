@@ -87,7 +87,7 @@ class AppFixtures extends Fixture
                 $picture
                     ->setAccommodation($accommodation)
                     ->setName($faker->name())
-                    ->setFile('https://source.unsplash.com/featured/200x300')
+                    ->setFile('https://source.unsplash.com/random/1920x1080/?house')
                     ->setDescription($faker->text())
                     ->setCreatedAt(new \DateTimeImmutable())
                     ->setUppdatedAt(new \DateTimeImmutable());
