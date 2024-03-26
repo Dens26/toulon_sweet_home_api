@@ -55,6 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $picture = null;
 
     #[ORM\Column]
+    #[Groups(['read:accommodation:item'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
