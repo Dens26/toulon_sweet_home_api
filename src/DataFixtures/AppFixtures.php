@@ -6,6 +6,7 @@ use App\Entity\Accommodation;
 use App\Entity\Picture;
 use App\Entity\Reservation;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -25,14 +26,17 @@ class AppFixtures extends Fixture
         // Init Faker
         $faker = Factory::create('fr_FR');
 
+        $url = 'https://randomuser.me/api/?nat=fr&results=10';
+        $result = file_get_contents($url);
+        $data = json_decode($result, true);
         for ($j = 0; $j < 10; ++$j) {
-            $firstName = $faker->firstName();
-            $lastName = $faker->lastName();
-            $email = $firstName . '.' . $lastName . '@test.com';
-            $phoneNumber = '06';
-            for ($i = 0; $i < 8; ++$i) {
-                $phoneNumber = $phoneNumber . random_int(0, 9);
-            }
+            $firstName = $data['results'][$j]['name']['first'];
+            $lastName = $data['results'][$j]['name']['last'];
+            $email = $data['results'][$j]['email'];
+            $phoneNumber = '06' . random_int(10000000, 99999999);
+            $picture = $data['results'][$j]['picture']['large'];
+            $createdAt = new DateTimeImmutable($data['results'][$j]['registered']['date']);
+
 
             // Create user
             $user = new User();
@@ -42,9 +46,10 @@ class AppFixtures extends Fixture
                 ->setLastName($lastName)
                 ->setUserName($faker->userName())
                 ->setPhoneNumber($phoneNumber)
-                ->setCreatedAt(new \DateTimeImmutable())
+                ->setCreatedAt($createdAt)
                 ->setUpdatedAt(new \DateTimeImmutable())
-                ->setLastConnection(new \DateTimeImmutable());
+                ->setLastConnection(new \DateTimeImmutable())
+                ->setPicture($picture);
 
             $password = $this->passwordHasher->hashPassword($user, 'password');
             $user->setPassword($password);
@@ -60,7 +65,7 @@ class AppFixtures extends Fixture
             $nbrOfRooms = random_int(1, 5);
             $accommodation = new Accommodation();
             $accommodation
-                ->setUSer($users[random_int(0, 9)])
+                ->setHost($users[random_int(0, 9)])
                 ->setName('Maison ' . $faker->name())
                 ->setDescription($faker->text())
                 ->setStreetName($faker->streetName())
