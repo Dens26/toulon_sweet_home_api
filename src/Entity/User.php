@@ -50,6 +50,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 10)]
     private ?string $phoneNumber = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['read:accommodation:item'])]
+    private ?string $picture = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -70,9 +74,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Accommodation::class, mappedBy: 'user')]
     private Collection $accommodations;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $picture = null;
 
     public function __construct()
     {
@@ -203,6 +204,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): static
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -281,7 +294,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->accommodations->contains($accommodation)) {
             $this->accommodations->add($accommodation);
-            $accommodation->setUser($this);
+            $accommodation->setHost($this);
         }
 
         return $this;
@@ -291,22 +304,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->accommodations->removeElement($accommodation)) {
             // set the owning side to null (unless already changed)
-            if ($accommodation->getUser() === $this) {
-                $accommodation->setUser(null);
+            if ($accommodation->getHost() === $this) {
+                $accommodation->setHost(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    public function setPicture(?string $picture): static
-    {
-        $this->picture = $picture;
 
         return $this;
     }
