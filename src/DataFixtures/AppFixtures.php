@@ -37,7 +37,6 @@ class AppFixtures extends Fixture
             $picture = $data['results'][$j]['picture']['large'];
             $createdAt = new DateTimeImmutable($data['results'][$j]['registered']['date']);
 
-
             // Create user
             $user = new User();
             $user
@@ -63,14 +62,26 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 5; ++$i) {
             $nbrOfRooms = random_int(1, 5);
+            $description = "<h2>À propos de ce logement</h2>
+            <p>Située à 10 minutes de Pont Audemer, cette maison contemporaine complètement rénovée en 2020 vous permettra de découvrir facilement la Normandie, elle est parfaitement adaptée pour 4 adultes et 2 enfants. En moins de 45 min vous pourrez visiter Le Marais Vernier, Rouen, Le Havre, Honfleur, Deauville mais aussi en 1 heure Etretat, Giverny, Caen…Vous pourrez profiter du jardin : Piscine chauffée à 28° en été, trampoline, cabane, balançoire et les animaux (poules et chats sur place).</p>
+            <h3>Le logement</h3>
+            <p>La maison est idéale pour les familles qui aiment la nature et les animaux, vous aurez vue sur les chevaux du voisin et disposerez d'équipements sympathiques pour occuper vos enfants comme la cabane sur pilotis avec les poules en dessous, la piscine chauffée à 28° uniquement en été et en hivernage à partir de septembre (donc inaccessible), la balançoire, le trampoline et un panneau de basket ! Des jeux de sociétés et consoles de jeux sont à disposition. Il est fort probable que vous croisiez nos chats pensez à nous prévenir en cas de problème d'allergies.</p>
+            <h3>Accès des voyageurs</h3>
+            <p>L'accès à la maison est autonome grâce à la boite à clef située au portail.</p>
+            <h3>Autres remarques</h3>
+            <p>Vous disposerez de tous le confort durant votre séjour pour vos vacances : barbecue, appareils à fondu, raclette et pierrade. TV avec accès à NETFLIX et Prime Vidéo ainsi qu'un vidéo projecteur dans la chambre principale pour vos soirées cinéma.</p>
+            <p>La maison est 10 minutes de Pont Audemer, petite ville charmante et très dynamique avec un bon nombre de restaurants pour tous les goûts, un cinéma, un bowling ainsi que divers activités comme le laser game ou encore un escape game.</p>
+            <p>Piscine uniquement en été environ de juin à fin septembre.</p>";
+
             $accommodation = new Accommodation();
             $accommodation
                 ->setHost($users[random_int(0, 9)])
                 ->setName('Maison ' . $faker->name())
-                ->setDescription($faker->text())
+                ->setSubtitle('Un havre de paix')
+                ->setDescription($description)
                 ->setStreetName($faker->streetName())
                 ->setStreetNumber((string) random_int(1, 150))
-                ->setPostal((string) random_int(10000, 99999))
+                ->setPostal('83000')
                 ->setCity('Toulon')
                 ->setCountry('France')
                 ->setAvailable((bool) random_int(0, 1))

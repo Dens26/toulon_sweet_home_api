@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -43,6 +42,10 @@ class Accommodation
     #[ORM\Column(length: 255)]
     #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
     private ?string $name = null;
+
+    #[ORM\Column(length: 45)]
+    #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
+    private ?string $subtitle = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
@@ -131,6 +134,18 @@ class Accommodation
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
 
         return $this;
     }
