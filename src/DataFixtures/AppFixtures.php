@@ -28,10 +28,10 @@ class AppFixtures extends Fixture
         for ($j = 0; $j < 10; ++$j) {
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
-            $email = $firstName.'.'.$lastName.'@test.com';
+            $email = $firstName . '.' . $lastName . '@test.com';
             $phoneNumber = '06';
             for ($i = 0; $i < 8; ++$i) {
-                $phoneNumber = $phoneNumber.random_int(0, 9);
+                $phoneNumber = $phoneNumber . random_int(0, 9);
             }
 
             // Create user
@@ -61,7 +61,7 @@ class AppFixtures extends Fixture
             $accommodation = new Accommodation();
             $accommodation
                 ->setUSer($users[random_int(0, 9)])
-                ->setName($faker->streetName)
+                ->setName('Maison ' . $faker->name())
                 ->setDescription($faker->text())
                 ->setStreetName($faker->streetName())
                 ->setStreetNumber((string) random_int(1, 150))
@@ -82,12 +82,27 @@ class AppFixtures extends Fixture
         $accommodations = $this->entityManager->getRepository(Accommodation::class)->findAll();
 
         foreach ($accommodations as $accommodation) {
-            for ($i = 0; $i < random_int(1, 5); ++$i) {
+            $urlPictures_small = [
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            ];
+            $urlPictures_big = [
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            ];
+            for ($i = 0; $i < 5; ++$i) {
                 $picture = new Picture();
                 $picture
                     ->setAccommodation($accommodation)
                     ->setName($faker->name())
-                    ->setFile('https://source.unsplash.com/random/1920x1080/?house')
+                    ->setFileSmall($urlPictures_small[$i])
+                    ->setFileBig($urlPictures_big[$i])
                     ->setDescription($faker->text())
                     ->setCreatedAt(new \DateTimeImmutable())
                     ->setUppdatedAt(new \DateTimeImmutable());
@@ -98,7 +113,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 2; ++$i) {
             $accommodation = $accommodations[random_int(0, 4)];
             $today = new \DateTimeImmutable();
-            $startOfReservation = $today->modify('+'.(string) random_int(5, 60).' days');
+            $startOfReservation = $today->modify('+' . (string) random_int(5, 60) . ' days');
             $endOfReservation = $startOfReservation->modify('+14 days');
 
             $reservation = new Reservation();

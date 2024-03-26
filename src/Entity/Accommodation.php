@@ -109,7 +109,8 @@ class Accommodation
     private Collection $pictures;
 
     #[ORM\ManyToOne(inversedBy: 'accommodations')]
-    private ?User $user = null;
+    #[Groups(['read:accommodation:item'])]
+    private ?User $host = null;
 
     public function __construct()
     {
@@ -320,14 +321,14 @@ class Accommodation
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getHost(): ?User
     {
-        return $this->user;
+        return $this->host;
     }
 
-    public function setUser(?User $user): static
+    public function setHost(?User $host): static
     {
-        $this->user = $user;
+        $this->host = $host;
 
         return $this;
     }

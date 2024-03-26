@@ -23,7 +23,11 @@ class Picture
 
     #[ORM\Column(length: 255)]
     #[Groups(['read:accommodation:collection', 'patch:accommodation'])]
-    private ?string $file = null;
+    private ?string $file_small = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['read:accommodation:item', 'patch:accommodation'])]
+    private ?string $file_big = null;
 
     #[Groups(['read:accommodation:item', 'patch:accommodation'])]
     #[ORM\Column(type: Types::TEXT)]
@@ -55,14 +59,25 @@ class Picture
         return $this;
     }
 
-    public function getFile(): ?string
+    public function getFileSmall(): ?string
     {
-        return $this->file;
+        return $this->file_small;
     }
 
-    public function setFile(string $file): static
+    public function setFileSmall(string $file_small): static
     {
-        $this->file = $file;
+        $this->file_small = $file_small;
+
+        return $this;
+    }
+    public function getFileBig(): ?string
+    {
+        return $this->file_big;
+    }
+
+    public function setFileBig(string $file_big): static
+    {
+        $this->file_big = $file_big;
 
         return $this;
     }
