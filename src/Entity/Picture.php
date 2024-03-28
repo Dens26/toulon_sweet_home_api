@@ -71,6 +71,7 @@ class Picture
 
         return $this;
     }
+
     public function getFileBig(): ?string
     {
         return $this->file_big;

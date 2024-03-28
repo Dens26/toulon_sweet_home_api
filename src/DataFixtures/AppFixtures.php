@@ -6,7 +6,6 @@ use App\Entity\Accommodation;
 use App\Entity\Picture;
 use App\Entity\Reservation;
 use App\Entity\User;
-use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -34,15 +33,15 @@ class AppFixtures extends Fixture
         // Create admin user
         $user = new User();
         $user
-            ->setEmail("admin@test.fr")
-            ->setFirstName("admin")
-            ->setLastName("admin")
-            ->setUserName("admin")
+            ->setEmail('admin@test.fr')
+            ->setFirstName('admin')
+            ->setLastName('admin')
+            ->setUserName('admin')
             ->setRoles(['USER_ADMIN'])
-            ->setPhoneNumber("0601020304")
-            ->setCreatedAt(new DateTimeImmutable())
-            ->setUpdatedAt(new DateTimeImmutable())
-            ->setLastConnection(new DateTimeImmutable())
+            ->setPhoneNumber('0601020304')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setLastConnection(new \DateTimeImmutable())
             ->setPicture($data['results'][0]['picture']['large']);
 
         $password = $this->passwordHasher->hashPassword($user, 'password');
@@ -52,15 +51,15 @@ class AppFixtures extends Fixture
         // Create user user
         $user = new User();
         $user
-            ->setEmail("user@test.fr")
-            ->setFirstName("user")
-            ->setLastName("user")
-            ->setUserName("user")
+            ->setEmail('user@test.fr')
+            ->setFirstName('user')
+            ->setLastName('user')
+            ->setUserName('user')
             ->setRoles([''])
-            ->setPhoneNumber("0601020304")
-            ->setCreatedAt(new DateTimeImmutable())
-            ->setUpdatedAt(new DateTimeImmutable())
-            ->setLastConnection(new DateTimeImmutable())
+            ->setPhoneNumber('0601020304')
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setUpdatedAt(new \DateTimeImmutable())
+            ->setLastConnection(new \DateTimeImmutable())
             ->setPicture($data['results'][0]['picture']['large']);
 
         $password = $this->passwordHasher->hashPassword($user, 'password');
@@ -72,9 +71,9 @@ class AppFixtures extends Fixture
             $firstName = $data['results'][$j]['name']['first'];
             $lastName = $data['results'][$j]['name']['last'];
             $email = $data['results'][$j]['email'];
-            $phoneNumber = '06' . random_int(10000000, 99999999);
+            $phoneNumber = '06'.random_int(10000000, 99999999);
             $picture = $data['results'][$j]['picture']['large'];
-            $createdAt = new DateTimeImmutable($data['results'][$j]['registered']['date']);
+            $createdAt = new \DateTimeImmutable($data['results'][$j]['registered']['date']);
 
             $user = new User();
             $user
@@ -114,7 +113,7 @@ class AppFixtures extends Fixture
             $accommodation = new Accommodation();
             $accommodation
                 ->setHost($users[random_int(0, 9)])
-                ->setName('Maison ' . $faker->name())
+                ->setName('Maison '.$faker->name())
                 ->setSubtitle('Un havre de paix')
                 ->setDescription($description)
                 ->setStreetName($faker->streetName())
@@ -179,7 +178,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 25; ++$i) {
             $accommodation = $accommodations[random_int(0, 4)];
             $today = new \DateTimeImmutable();
-            $startOfReservation = $today->modify('+' . (string) random_int(5, 60) . ' days');
+            $startOfReservation = $today->modify('+'.(string) random_int(5, 60).' days');
             $endOfReservation = $startOfReservation->modify('+14 days');
 
             $reservation = new Reservation();

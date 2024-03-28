@@ -18,19 +18,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new GetCollection(
             normalizationContext: [
-                'groups' => ['read:accommodation:collection']
+                'groups' => ['read:accommodation:collection'],
             ]
         ),
         new Get(
             normalizationContext: [
-                'groups' => ['read:accommodation:collection', 'read:accommodation:item']
+                'groups' => ['read:accommodation:collection', 'read:accommodation:item'],
             ]
         ),
         new Patch(
             denormalizationContext: [
-                'groups' => ['patch:accommodation']
+                'groups' => ['patch:accommodation'],
             ]
-        )
+        ),
     ]
 )]
 class Accommodation

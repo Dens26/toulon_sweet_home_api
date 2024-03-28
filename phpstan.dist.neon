@@ -3,5 +3,7 @@ parameters:
     paths:
         - config/
         - public/
-        - src/
+        - src/Controller
+        - src/Entity
+        - src/Repository
         - tests/
