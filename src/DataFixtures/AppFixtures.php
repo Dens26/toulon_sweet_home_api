@@ -26,10 +26,49 @@ class AppFixtures extends Fixture
         // Init Faker
         $faker = Factory::create('fr_FR');
 
-        $url = 'https://randomuser.me/api/?nat=fr&results=10';
+        // Create 25 users
+        $url = 'https://randomuser.me/api/?nat=fr&results=25';
         $result = file_get_contents($url);
         $data = json_decode($result, true);
-        for ($j = 0; $j < 10; ++$j) {
+
+        // Create admin user
+        $user = new User();
+        $user
+            ->setEmail("admin@test.fr")
+            ->setFirstName("admin")
+            ->setLastName("admin")
+            ->setUserName("admin")
+            ->setRoles(['USER_ADMIN'])
+            ->setPhoneNumber("0601020304")
+            ->setCreatedAt(new DateTimeImmutable())
+            ->setUpdatedAt(new DateTimeImmutable())
+            ->setLastConnection(new DateTimeImmutable())
+            ->setPicture($data['results'][0]['picture']['large']);
+
+        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($password);
+        $manager->persist($user);
+
+        // Create user user
+        $user = new User();
+        $user
+            ->setEmail("user@test.fr")
+            ->setFirstName("user")
+            ->setLastName("user")
+            ->setUserName("user")
+            ->setRoles([''])
+            ->setPhoneNumber("0601020304")
+            ->setCreatedAt(new DateTimeImmutable())
+            ->setUpdatedAt(new DateTimeImmutable())
+            ->setLastConnection(new DateTimeImmutable())
+            ->setPicture($data['results'][0]['picture']['large']);
+
+        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($password);
+        $manager->persist($user);
+
+        // Create 25 users
+        for ($j = 0; $j < 25; ++$j) {
             $firstName = $data['results'][$j]['name']['first'];
             $lastName = $data['results'][$j]['name']['last'];
             $email = $data['results'][$j]['email'];
@@ -37,7 +76,6 @@ class AppFixtures extends Fixture
             $picture = $data['results'][$j]['picture']['large'];
             $createdAt = new DateTimeImmutable($data['results'][$j]['registered']['date']);
 
-            // Create user
             $user = new User();
             $user
                 ->setEmail($email)
@@ -58,9 +96,9 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+        // Create 100 accommodations
         $users = $this->entityManager->getRepository(User::class)->findAll();
-
-        for ($i = 0; $i < 5; ++$i) {
+        for ($i = 0; $i < 100; ++$i) {
             $nbrOfRooms = random_int(1, 5);
             $description = "<h2>À propos de ce logement</h2>
             <p>Située à 10 minutes de Pont Audemer, cette maison contemporaine complètement rénovée en 2020 vous permettra de découvrir facilement la Normandie, elle est parfaitement adaptée pour 4 adultes et 2 enfants. En moins de 45 min vous pourrez visiter Le Marais Vernier, Rouen, Le Havre, Honfleur, Deauville mais aussi en 1 heure Etretat, Giverny, Caen…Vous pourrez profiter du jardin : Piscine chauffée à 28° en été, trampoline, cabane, balançoire et les animaux (poules et chats sur place).</p>
@@ -97,22 +135,33 @@ class AppFixtures extends Fixture
 
         $accommodations = $this->entityManager->getRepository(Accommodation::class)->findAll();
 
+        // Create 10 pictures by accommodation
         foreach ($accommodations as $accommodation) {
             $urlPictures_small = [
-                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1676320514136-5a15d9f97dfa?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1613685703305-8592a8a6bfee?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1623625434462-e5e42318ae49?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             ];
             $urlPictures_big = [
-                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=1980&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1661858661945-40c62d8fca88?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1615874959474-d609969a20ed?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1594498653385-d5172c532c00?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://plus.unsplash.com/premium_photo-1676320514136-5a15d9f97dfa?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1613685703305-8592a8a6bfee?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                'https://images.unsplash.com/photo-1623625434462-e5e42318ae49?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             ];
-            for ($i = 0; $i < 5; ++$i) {
+            for ($i = 0; $i < 10; ++$i) {
                 $picture = new Picture();
                 $picture
                     ->setAccommodation($accommodation)
@@ -126,7 +175,8 @@ class AppFixtures extends Fixture
             }
         }
 
-        for ($i = 0; $i < 2; ++$i) {
+        // Create 25 reservations
+        for ($i = 0; $i < 25; ++$i) {
             $accommodation = $accommodations[random_int(0, 4)];
             $today = new \DateTimeImmutable();
             $startOfReservation = $today->modify('+' . (string) random_int(5, 60) . ' days');

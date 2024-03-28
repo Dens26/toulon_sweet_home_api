@@ -15,6 +15,7 @@ class Picture
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:accommodation:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
