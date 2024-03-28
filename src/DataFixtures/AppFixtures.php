@@ -30,6 +30,44 @@ class AppFixtures extends Fixture
         $url = 'https://randomuser.me/api/?nat=fr&results=25';
         $result = file_get_contents($url);
         $data = json_decode($result, true);
+
+        // Create admin user
+        $user = new User();
+        $user
+            ->setEmail("admin@test.fr")
+            ->setFirstName("admin")
+            ->setLastName("admin")
+            ->setUserName("admin")
+            ->setRoles(['USER_ADMIN'])
+            ->setPhoneNumber("0601020304")
+            ->setCreatedAt(new DateTimeImmutable())
+            ->setUpdatedAt(new DateTimeImmutable())
+            ->setLastConnection(new DateTimeImmutable())
+            ->setPicture($data['results'][0]['picture']['large']);
+
+        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($password);
+        $manager->persist($user);
+
+        // Create user user
+        $user = new User();
+        $user
+            ->setEmail("user@test.fr")
+            ->setFirstName("user")
+            ->setLastName("user")
+            ->setUserName("user")
+            ->setRoles([''])
+            ->setPhoneNumber("0601020304")
+            ->setCreatedAt(new DateTimeImmutable())
+            ->setUpdatedAt(new DateTimeImmutable())
+            ->setLastConnection(new DateTimeImmutable())
+            ->setPicture($data['results'][0]['picture']['large']);
+
+        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($password);
+        $manager->persist($user);
+
+        // Create 25 users
         for ($j = 0; $j < 25; ++$j) {
             $firstName = $data['results'][$j]['name']['first'];
             $lastName = $data['results'][$j]['name']['last'];
@@ -38,7 +76,6 @@ class AppFixtures extends Fixture
             $picture = $data['results'][$j]['picture']['large'];
             $createdAt = new DateTimeImmutable($data['results'][$j]['registered']['date']);
 
-            // Create user
             $user = new User();
             $user
                 ->setEmail($email)
