@@ -117,6 +117,9 @@ class Accommodation
     #[Groups(['read:accommodation:item'])]
     private ?User $host = null;
 
+    #[ORM\ManyToOne(inversedBy: 'accommodations')]
+    private ?Type $type = null;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -376,6 +379,18 @@ class Accommodation
                 $picture->setAccommodation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Type $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

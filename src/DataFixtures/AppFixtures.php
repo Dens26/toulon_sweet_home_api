@@ -2,12 +2,16 @@
 
 namespace App\DataFixtures;
 
+use ApiPlatform\Api\QueryParameterValidator\Validator\Length;
 use App\Entity\Accommodation;
 use App\Entity\Picture;
 use App\Entity\Reservation;
+use App\Entity\Type;
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -44,7 +48,7 @@ class AppFixtures extends Fixture
             ->setLastConnection(new \DateTimeImmutable())
             ->setPicture($data['results'][0]['picture']['large']);
 
-        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $password = $this->passwordHasher->hashPassword($user, 'TSH:password24');
         $user->setPassword($password);
         $manager->persist($user);
 
@@ -62,7 +66,7 @@ class AppFixtures extends Fixture
             ->setLastConnection(new \DateTimeImmutable())
             ->setPicture($data['results'][0]['picture']['large']);
 
-        $password = $this->passwordHasher->hashPassword($user, 'password');
+        $password = $this->passwordHasher->hashPassword($user, 'TSH:password24');
         $user->setPassword($password);
         $manager->persist($user);
 
@@ -71,7 +75,7 @@ class AppFixtures extends Fixture
             $firstName = $data['results'][$j]['name']['first'];
             $lastName = $data['results'][$j]['name']['last'];
             $email = $data['results'][$j]['email'];
-            $phoneNumber = '06'.random_int(10000000, 99999999);
+            $phoneNumber = '06' . random_int(10000000, 99999999);
             $picture = $data['results'][$j]['picture']['large'];
             $createdAt = new \DateTimeImmutable($data['results'][$j]['registered']['date']);
 
@@ -95,6 +99,36 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+        // Create type of accommodation
+        $types = [
+            'Chambre',
+            'Maison',
+            'Appartement',
+            'Caravane',
+            'Mobil-home'
+        ];
+        $descriptions = [
+            'Description d\'une chambre',
+            'Description d\'une maison',
+            'Description d\un appartement',
+            'Description d\'une caravane',
+            'Description d\un mobil-home'
+        ];
+
+        for ($i = 0; $i < count($types) ; $i++){
+            $type = new Type();
+
+            $type->setName($types[$i]);
+            $type->setDescription($descriptions[$i]);
+            $type->setCreatedAt(new DateTimeImmutable());
+            $type->setUpdatedAt(new DateTimeImmutable());
+
+            $manager->persist($type);
+        }
+        $manager->flush();
+
+        $types = $this->entityManager->getRepository(Type::class)->findAll();
+
         // Create 100 accommodations
         $users = $this->entityManager->getRepository(User::class)->findAll();
         for ($i = 0; $i < 100; ++$i) {
@@ -113,9 +147,10 @@ class AppFixtures extends Fixture
             $accommodation = new Accommodation();
             $accommodation
                 ->setHost($users[random_int(0, 9)])
-                ->setName('Maison '.$faker->name())
+                ->setName('Maison ' . $faker->name())
                 ->setSubtitle('Un havre de paix')
                 ->setDescription($description)
+                ->setType($types[random_int(0,4)])
                 ->setStreetName($faker->streetName())
                 ->setStreetNumber((string) random_int(1, 150))
                 ->setPostal('83000')
@@ -178,7 +213,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 25; ++$i) {
             $accommodation = $accommodations[random_int(0, 4)];
             $today = new \DateTimeImmutable();
-            $startOfReservation = $today->modify('+'.(string) random_int(5, 60).' days');
+            $startOfReservation = $today->modify('+' . (string) random_int(5, 60) . ' days');
             $endOfReservation = $startOfReservation->modify('+14 days');
 
             $reservation = new Reservation();
